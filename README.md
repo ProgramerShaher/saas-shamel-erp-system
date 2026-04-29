@@ -1,56 +1,78 @@
 إليك كود `README.md` احترافي جاهز لوضعه في مستودع المشروع:
 
-```markdown
-# 🧾 ErpSystem - Multi-Tenant SaaS ERP & Accounting
+<a name="readme-top"></a>
 
-A cloud-based **Enterprise Resource Planning (ERP)** system built with **.NET 8**, **Angular**, and **SQL Server**, following **Clean Architecture** and **CQRS**.  
-It serves small to medium-sized businesses (grocery stores, pharmacies, restaurants, retail shops, etc.) with fully integrated **Point of Sale**, **Inventory**, **Purchases**, and **Double-Entry Accounting**.
+# 🧾 ErpSystem — Multi-Tenant SaaS ERP & Accounting
 
----
-
-## 🎯 Target Audience
-- 🏪 Supermarkets, grocery stores
-- 💊 Pharmacies
-- 🍕 Restaurants & cafés
-- 👗 Clothing & accessory shops
-- 🛒 Wholesale & retail stores
-- 🏢 Service offices (real estate, law firms, etc.)
+نظام تخطيط موارد المؤسسات (ERP) سحابي متعدد المستأجرين، يدمج بين **إدارة المبيعات، المشتريات، المخزون، المصروفات** و**المحاسبة المالية المزدوجة**.  
+مبني وفق **Clean Architecture** و **CQRS** باستخدام **.NET 8** و **Angular** و **SQL Server**.
 
 ---
 
-## 🧩 Key Features
+## جدول المحتويات
 
-- **Multi-Tenant SaaS** – isolated data per tenant, single application instance.
-- **POS (Point of Sale)** – fast cashier interface with barcode scanning & printing.
-- **Inventory Management** – stock tracking, stock alerts, stocktaking, Excel import.
-- **Purchases & Suppliers** – purchase orders, automated stock update, supplier balances.
-- **Expense Tracking** – categorized expenses with automatic accounting entries.
-- **Double-Entry Accounting** – chart of accounts, general ledger, trial balance, income statement, balance sheet.
-- **Reports & Dashboards** – sales, profits, inventory, financial statements, export to Excel/PDF.
-- **Role-Based Access Control** – Admin, Manager, Accountant, Cashier.
-- **JWT Authentication** – secure token-based login.
-- **Audit Logging** – all changes tracked.
-- **RESTful API** – ready for mobile or third-party integrations.
-
----
-
-## ⚙️ Technology Stack
-
-| Layer               | Technology                                      |
-|---------------------|--------------------------------------------------|
-| **Backend**         | .NET 8, ASP.NET Core Web API, C# 12             |
-| **Frontend**        | Angular (latest LTS)                             |
-| **Database**        | SQL Server + Entity Framework Core               |
-| **Architecture**    | Clean Architecture, CQRS (MediatR)               |
-| **Validation**      | FluentValidation                                 |
-| **Authentication**  | JWT Bearer tokens                                |
-| **Logging**         | Serilog                                          |
-| **Documentation**   | Swagger / OpenAPI                                |
+- [الجمهور المستهدف](#-الجمهور-المستهدف)
+- [الميزات الرئيسية](#-الميزات-الرئيسية)
+- [التقنيات المستخدمة](#-التقنيات-المستخدمة)
+- [الهيكل المعماري (Clean Architecture)](#-الهيكل-المعماري-clean-architecture)
+- [آلية تعدد المستأجرين (Multi-Tenancy)](#-آلية-تعدد-المستأجرين-multi-tenancy)
+- [أحداث المجال (Domain Events)](#-أحداث-المجال-domain-events)
+- [المتطلبات الأساسية](#-المتطلبات-الأساسية)
+- [تشغيل المشروع محلياً](#-تشغيل-المشروع-محلياً)
+- [التوثيق (API Documentation)](#-التوثيق-api-documentation)
+- [التقارير والمخرجات](#-التقارير-والمخرجات)
+- [الاختبارات](#-الاختبارات)
+- [النشر (Deployment)](#-النشر-deployment)
+- [المساهمة](#-المساهمة)
+- [الترخيص](#-الترخيص)
+- [تواصل](#-تواصل)
 
 ---
 
-## 📁 Clean Architecture Layer Structure
+## 🎯 الجمهور المستهدف
 
+| الفئة | أمثلة |
+|-------|-------|
+| 🏪 بقالة وسوبر ماركت | بقالة الحي، سوبر ماركت متوسط |
+| 💊 صيدليات | صيدلية مستقلة أو سلسلة صغيرة |
+| 🍕 مطاعم وكافيهات | مطعم، كافيه، بيتزا |
+| 👗 محلات ملابس وإكسسوارات | محل ألبسة، أحذية |
+| 🛒 تجارة الجملة والتجزئة | مواد غذائية، منظفات |
+| 🏢 مكاتب خدمات | عقارات، محاماة، شركات صغيرة |
+
+---
+
+## 🧩 الميزات الرئيسية
+
+- **نظام متعدد المستأجرين (SaaS)** – عزل تام للبيانات بين المستأجرين.
+- **واجهة كاشير (POS)** – بحث سريع بالباركود، سلة مشتريات، طباعة الفاتورة.
+- **إدارة المخزون** – حركة آنية، تنبيهات النفاد، جرد، استيراد Excel.
+- **إدارة المشتريات والموردين** – فواتير شراء، تحديث آلي للمخزون.
+- **إدارة المصروفات** – تصنيف المصروفات وربطها المحاسبي.
+- **محاسبة مزدوجة كاملة** – شجرة حسابات، قيود تلقائية، دفتر أستاذ، ميزان مراجعة، قائمة دخل، ميزانية عمومية.
+- **تقارير ولوحة تحكم** – المبيعات، الأرباح، المخزون، وتقارير مالية مع تصدير Excel/PDF.
+- **صلاحيات الأدوار (RBAC)** – مدير، محاسب، كاشير.
+- **تسجيل الدخول بـ JWT** – آمن وقابل للتجديد.
+- **سجل التدقيق (Audit Log)** – تتبع جميع التغييرات.
+- **API موثقة بـ Swagger** – جاهزة لتطبيق جوال أو تكاملات خارجية.
+
+---
+
+## ⚙️ التقنيات المستخدمة
+
+| الطبقة | التقنية |
+|--------|---------|
+| **الخادم (Backend)** | .NET 8, ASP.NET Core Web API, C# 12 |
+| **الواجهة الأمامية (Frontend)** | Angular (آخر إصدار LTS) |
+| **قاعدة البيانات** | SQL Server + Entity Framework Core |
+| **المعمارية** | Clean Architecture + CQRS (MediatR) |
+| **التحقق** | FluentValidation |
+| **التسجيل والأمان** | JWT Bearer, Serilog |
+| **التوثيق** | Swagger / OpenAPI |
+
+---
+
+## 📁 الهيكل المعماري (Clean Architecture)
 ```
 src/
 ├── ErpSystem.Domain/          # Entities, Value Objects, Domain Events, Interfaces
