@@ -1,34 +1,44 @@
 using System;
-using System.Collections.Generic;
 using ERPsystem.Domain.Common;
 
-namespace ERPsystem.Domain.Entities
+namespace ERPsystem.Domain.Entities.Purchasing
 {
     /// <summary>
-    /// يمثل المورد الذي يتم شراء البضاعة والمنتجات منه.
+    /// المورد / التاجر الذي يتم شراء البضائع منه.
     /// </summary>
     public class Supplier : TenantBaseEntity
     {
-        /// <summary>اسم المورد او الشريك المورد</summary>
-        public string Name { get; set; } = string.Empty;
+        /// <summary>الاسم التجاري للمورد</summary>
+        public string Name { get; set; } = null!;
         
-        /// <summary>رقم اتصال المورد</summary>
-        public string? Phone { get; set; }
+        /// <summary>اسم المندوب للتواصل</summary>
+        public string? ContactPerson { get; set; }
         
-        /// <summary>البريد الإلكتروني للمورد</summary>
-        public string? Email { get; set; }
+        /// <summary>هاتف المورد</summary>
+        public string? PhoneNumber { get; set; }
         
-        /// <summary>مقر المورد أو عنوانه</summary>
-        public string? Address { get; set; }
-        
-        /// <summary>الرقم الضريبي للمورد</summary>
+        /// <summary>الرقم الضريبي للمورد (يستخدم لاحقاً في الإقرار الضريبي)</summary>
         public string? TaxNumber { get; set; }
         
-        /// <summary>رصيد المستحقات المالية الباقية لنا او علينا للمورد</summary>
-        public decimal Balance { get; set; }
+        /// <summary>الايميل للتواصل</summary>
+        public string? Email { get; set; }
+        
+        /// <summary>عنوان شركة المورد</summary>
+        public string? Address { get; set; }
 
-        // Navigation
-        public virtual ICollection<PurchaseInvoice> PurchaseInvoices { get; set; } = new List<PurchaseInvoice>();
-        public virtual ICollection<SupplierPayment> Payments { get; set; } = new List<SupplierPayment>();
+        /// <summary>حساب المورد في الدليل المحاسبي (دائنون أمميون)</summary>
+        public Guid GlAccountId { get; set; }
+
+        /// <summary>فترة السماح التأمينية بالدفع بالأيام</summary>
+        public int CreditPeriodDays { get; set; } = 0;
+        
+        /// <summary>الحد الائتماني المسموح بالسحب منه كدين</summary>
+        public decimal CreditLimit { get; set; } = 0;
+        
+        /// <summary>حالة التعامل الحالية</summary>
+        public bool IsActive { get; set; } = true;
+
+        /// <summary>إجمالي الرصيد القائم علينا لهذا المورد حاليا</summary>
+        public decimal CurrentBalance { get; set; } = 0;
     }
 }

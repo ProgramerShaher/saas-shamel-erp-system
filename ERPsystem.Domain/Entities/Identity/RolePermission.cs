@@ -1,32 +1,27 @@
 using System;
 using ERPsystem.Domain.Common;
 
-namespace ERPsystem.Domain.Entities
+namespace ERPsystem.Domain.Entities.Identity
 {
     /// <summary>
-    /// يحدد صلاحيات دور معين عبر تقسيمات النظام (الوحدات).
+    /// ربط الدور بالمفاتيح الصلاحية المحددة.
+    /// يعبر عن (الدور الفلاني يمتلك الصلاحية الفلانية وتم التمكين).
     /// </summary>
-    public class RolePermission : TenantBaseEntity
+    public class RolePermission : BaseEntity
     {
-        /// <summary>متصل بالدور المعني بهذه الصلاحيات</summary>
+        /// <summary>معرف الدور المخصص</summary>
         public Guid RoleId { get; set; }
         
-        /// <summary>اسم الوحدة (مثال: المبيعات، المخزون، الحسابات)</summary>
-        public string Module { get; set; } = string.Empty;
-        
-        /// <summary>صلاحية العرض أو القراءة</summary>
-        public bool CanView { get; set; }
-        
-        /// <summary>صلاحية إنشاء بيانات جديدة</summary>
-        public bool CanCreate { get; set; }
-        
-        /// <summary>صلاحية التعديل</summary>
-        public bool CanUpdate { get; set; }
-        
-        /// <summary>صلاحية الحذف</summary>
-        public bool CanDelete { get; set; }
-
-        // Navigation
+        /// <summary>الدور</summary>
         public virtual Role Role { get; set; } = null!;
+
+        /// <summary>معرف صلاحية النظام (من الجدول العام)</summary>
+        public Guid PermissionId { get; set; }
+        
+        /// <summary>الصلاحية الممنوحة</summary>
+        public virtual Permission Permission { get; set; } = null!;
+
+        /// <summary>هل الصلاحية ممنوحة أم مرفوضة صراحة؟</summary>
+        public bool IsGranted { get; set; } = true;
     }
 }
