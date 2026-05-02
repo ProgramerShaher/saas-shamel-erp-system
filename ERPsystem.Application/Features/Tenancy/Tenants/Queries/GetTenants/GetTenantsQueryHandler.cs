@@ -5,6 +5,7 @@ using AutoMapper.QueryableExtensions;
 using ERPsystem.Application.Common.Extensions;
 using ERPsystem.Application.Common.Interfaces;
 using ERPsystem.Application.Common.Models;
+using ERPsystem.Application.Features.Tenancy.Tenants.Queries.GetTenantById;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -17,7 +18,7 @@ namespace ERPsystem.Application.Features.Tenancy.Tenants.Queries.GetTenants
     /// يُطبق قاعدة أولاً من الدستور: استخدام ProjectTo على IQueryable.
     /// يُطبق قاعدة خامساً من الدستور: IQueryable Extensions بدون Repository.
     /// </summary>
-    public class GetTenantsQueryHandler : IRequestHandler<GetTenantsQuery, PagedResponse<TenantVm>>
+    public class GetTenantsQueryHandler : IRequestHandler<GetTenantsQuery, PagedResponse<TenantDto>>
     {
         private readonly IApplicationDbContext _context;
         private readonly IMapper _mapper;
@@ -36,7 +37,7 @@ namespace ERPsystem.Application.Features.Tenancy.Tenants.Queries.GetTenants
         /// <summary>
         /// يُنفِّذ استعلام استرجاع المنشآت مع تطبيق البحث والصفحات.
         /// </summary>
-        public async Task<PagedResponse<TenantVm>> Handle(
+        public async Task<PagedResponse<TenantDto>> Handle(
             GetTenantsQuery request,
             CancellationToken cancellationToken)
         {
@@ -60,7 +61,7 @@ namespace ERPsystem.Application.Features.Tenancy.Tenants.Queries.GetTenants
             // بناءً على TenantMappingProfile — لا تتحرك أعمدة غير مطلوبة للذاكرة
             var projectedQuery = query
                 .OrderBy(t => t.Name)
-                .ProjectTo<TenantVm>(_mapper.ConfigurationProvider);
+                .ProjectTo<TenantDto>(_mapper.ConfigurationProvider);
 
             // تطبيق الـ Pagination عبر الدالة المشتركة
             var result = await projectedQuery.ToPagedResponseAsync(

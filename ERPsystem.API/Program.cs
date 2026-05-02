@@ -24,7 +24,6 @@ builder.Services.AddInfrastructureServices(builder.Configuration);
 // تسجيل خدمات الـ API (المستخدم الحالي والـ HttpContext)
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
-
 // إعداد الإصدارات (API Versioning)
 builder.Services.AddApiVersioning(options =>
 {

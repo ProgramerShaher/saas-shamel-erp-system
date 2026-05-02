@@ -1,20 +1,21 @@
+using ERPsystem.Application.Common.Interfaces;
+using ERPsystem.Domain.Common;
+using ERPsystem.Domain.Entities.Catalog;
+using ERPsystem.Domain.Entities.Configuration;
+using ERPsystem.Domain.Entities.Finance;
+using ERPsystem.Domain.Entities.Identity;
+using ERPsystem.Domain.Entities.Inventory;
+using ERPsystem.Domain.Entities.Organization;
+using ERPsystem.Domain.Entities.Purchasing;
+using ERPsystem.Domain.Entities.Sales;
+using ERPsystem.Domain.Entities.Tenancy;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Reflection.Emit;
 using System.Threading;
 using System.Threading.Tasks;
-using ERPsystem.Application.Common.Interfaces;
-using ERPsystem.Domain.Common;
-using ERPsystem.Domain.Entities.Tenancy;
-using ERPsystem.Domain.Entities.Organization;
-using ERPsystem.Domain.Entities.Identity;
-using ERPsystem.Domain.Entities.Catalog;
-using ERPsystem.Domain.Entities.Inventory;
-using ERPsystem.Domain.Entities.Purchasing;
-using ERPsystem.Domain.Entities.Sales;
-using ERPsystem.Domain.Entities.Finance;
-using ERPsystem.Domain.Entities.Configuration;
-using Microsoft.EntityFrameworkCore;
 
 namespace ERPsystem.Infrastructure.Persistence
 {
@@ -190,6 +191,17 @@ namespace ERPsystem.Infrastructure.Persistence
             builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 
             base.OnModelCreating(builder);
+
+            // جلب كل العلاقات في قاعدة البيانات
+            var foreignKeys = builder.Model.GetEntityTypes()
+                .SelectMany(e => e.GetForeignKeys());
+
+            foreach (var fk in foreignKeys)
+            {
+                // تغيير سلوك الحذف من Cascade إلى Restrict أو NoAction
+                // Restrict تمنع الحذف إذا كان هناك سجلات مرتبطة
+                fk.DeleteBehavior = DeleteBehavior.Restrict;
+            }
 
             // Global Query Filters: إخفاء المحذوفات + عزل بيانات المنشآت
             ApplyGlobalFilters(builder);

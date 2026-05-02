@@ -14,7 +14,7 @@ namespace ERPsystem.Domain.Entities.Tenancy
         /// <summary>اسم المنشأة التجارية أو الشركة</summary>
         public string Name { get; set; } = null!;
 
-        /// <summary>النطاق الفرعي المميز للمنشأة (مثال: alnahdi.erp.com)</summary>
+        /// <summary>النطاق الفرعي المميز للمنشأة (مثال: alyaari.erp.com)</summary>
         public string Slug { get; set; } = null!;
 
         /// <summary>نوع النشاط التجاري لتحديد شكل النظام (صيدلية، سوبرماركت، ملابس)</summary>

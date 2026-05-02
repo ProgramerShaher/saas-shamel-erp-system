@@ -1,8 +1,8 @@
 using AutoMapper;
-using ERPsystem.Application.Features.Tenancy.Tenants.Queries.GetTenants;
+using ERPsystem.Application.Features.Tenancy.Tenants.Queries.GetTenantById;
 using ERPsystem.Domain.Entities.Tenancy;
 
-namespace ERPsystem.Application.Features.Tenancy.Tenants
+namespace ERPsystem.Application.Features.Tenancy.Tenants.Queries.GetTenants
 {
     /// <summary>
     /// ملف الـ Mapping الخاص بميزة إدارة المنشآت.
@@ -12,16 +12,16 @@ namespace ERPsystem.Application.Features.Tenancy.Tenants
     ///   - يُتجاهل أي حقل حساس (كـ PasswordHash في المستخدمين).
     ///   - كل Feature تملك Profile مستقل خاص بها.
     /// </summary>
-    public class TenantMappingProfile : Profile
+    public class GetTenantsMappingProfile : Profile
     {
-        public TenantMappingProfile()
+        public GetTenantsMappingProfile()
         {
             // ══════════════════════════════════════════════════════════
-            //  Tenant Entity → TenantVm (القائمة والبحث)
+            //  Tenant Entity → TenantDto (القائمة والبحث)
             //  يُستخدم هذا الـ Mapping مع ProjectTo في الـ QueryHandler
             //  ليتحول مباشرة داخل SQL دون جلب كل الأعمدة للذاكرة.
             // ══════════════════════════════════════════════════════════
-            CreateMap<Tenant, TenantVm>()
+            CreateMap<Tenant, TenantDto>()
                 .ForMember(dest => dest.Id,           opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.Name,         opt => opt.MapFrom(src => src.Name))
                 .ForMember(dest => dest.Slug,         opt => opt.MapFrom(src => src.Slug))

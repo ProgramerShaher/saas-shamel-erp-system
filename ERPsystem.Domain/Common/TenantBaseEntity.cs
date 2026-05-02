@@ -1,3 +1,4 @@
+using ERPsystem.Domain.Entities.Tenancy;
 using System;
 
 namespace ERPsystem.Domain.Common
@@ -12,6 +13,6 @@ namespace ERPsystem.Domain.Common
         public Guid TenantId { get; set; }
         
         /// <summary>الكيان الملاحي للمنشأة (التطرق لجدول المنشآت)</summary>
-        public virtual Entities.Tenancy.Tenant Tenant { get; set; } = null!;
+        public virtual Tenant Tenant { get; set; } = null!;
     }
 }

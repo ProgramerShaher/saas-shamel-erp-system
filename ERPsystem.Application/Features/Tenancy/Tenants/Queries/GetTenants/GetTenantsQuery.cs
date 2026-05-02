@@ -1,4 +1,5 @@
 using ERPsystem.Application.Common.Models;
+using ERPsystem.Application.Features.Tenancy.Tenants.Queries.GetTenantById;
 using MediatR;
 
 namespace ERPsystem.Application.Features.Tenancy.Tenants.Queries.GetTenants
@@ -7,7 +8,7 @@ namespace ERPsystem.Application.Features.Tenancy.Tenants.Queries.GetTenants
     /// استعلام استرجاع قائمة المنشآت مع دعم الـ Pagination والبحث.
     /// يُطبق مبدأ CQRS: هذا Query للقراءة فقط ولا يغير البيانات.
     /// </summary>
-    public record GetTenantsQuery : IRequest<PagedResponse<TenantVm>>
+    public record GetTenantsQuery : IRequest<PagedResponse<TenantDto>>
     {
         /// <summary>رقم الصفحة الحالية</summary>
         public int PageNumber { get; init; } = 1;
