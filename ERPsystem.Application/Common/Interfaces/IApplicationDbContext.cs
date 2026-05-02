@@ -36,6 +36,7 @@ namespace ERPsystem.Application.Common.Interfaces
         DbSet<SubscriptionPlan> SubscriptionPlans { get; }
         DbSet<TenantFeatureFlag> TenantFeatureFlags { get; }
         DbSet<TenantSubscriptionHistory> TenantSubscriptionHistories { get; }
+        DbSet<BusinessTypeFeature> BusinessTypeFeatures { get; }
 
         // ══════════════════════════════════════════════════════
         //  Organization Module

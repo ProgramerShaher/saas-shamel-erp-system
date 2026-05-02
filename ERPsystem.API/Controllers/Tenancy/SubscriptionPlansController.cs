@@ -41,7 +41,7 @@ namespace ERPsystem.API.Controllers.Tenancy
         }
 
         [HttpGet("{id:guid}")]
-        [ProducesResponseType(typeof(BaseResponse<ERPsystem.Application.Features.Tenancy.SubscriptionPlans.Queries.GetSubscriptionPlanById.SubscriptionPlanDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(BaseResponse<SubscriptionPlanDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetById([FromRoute] Guid id, CancellationToken cancellationToken = default)
         {
             var result = await Mediator.Send(new GetSubscriptionPlanByIdQuery { Id = id }, cancellationToken);

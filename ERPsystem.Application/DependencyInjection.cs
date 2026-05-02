@@ -1,6 +1,8 @@
 using System.Reflection;
 using AutoMapper;
 using ERPsystem.Application.Common.Behaviors;
+using ERPsystem.Application.Common.Interfaces;
+using ERPsystem.Application.Common.Services;
 using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
@@ -34,6 +36,9 @@ namespace ERPsystem.Application
             // Logging → Validation → (Handler)
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+
+            // تسجيل خدمة إعداد المنشآت (Tenant Setup Service)
+            services.AddScoped<ITenantSetupService, TenantSetupService>();
 
             return services;
         }

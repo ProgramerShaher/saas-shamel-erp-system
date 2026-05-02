@@ -45,6 +45,7 @@ namespace ERPsystem.Infrastructure.Persistence
         public DbSet<SubscriptionPlan> SubscriptionPlans => Set<SubscriptionPlan>();
         public DbSet<TenantFeatureFlag> TenantFeatureFlags => Set<TenantFeatureFlag>();
         public DbSet<TenantSubscriptionHistory> TenantSubscriptionHistories => Set<TenantSubscriptionHistory>();
+        public DbSet<BusinessTypeFeature> BusinessTypeFeatures => Set<BusinessTypeFeature>();
 
         // ══════════════════════════════════════════════════════
         //  Organization Module

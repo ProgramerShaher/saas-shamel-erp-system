@@ -4,6 +4,8 @@ using ERPsystem.API.Services;
 using ERPsystem.Application;
 using ERPsystem.Application.Common.Interfaces;
 using ERPsystem.Infrastructure;
+using ERPsystem.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -60,4 +62,25 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.Run();
+// ضخ البيانات الأولية (Seeding)
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        var context = services.GetRequiredService<ApplicationDbContext>();
+        // التأكد من تطبيق أي هجرات معلقة وضخ البيانات
+        if (context.Database.IsSqlServer())
+        {
+            await context.Database.MigrateAsync();
+        }
+        await ApplicationDbContextSeed.SeedDatabaseAsync(context);
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "حدث خطأ أثناء ضخ البيانات الأولية (Seeding) في قاعدة البيانات.");
+    }
+}
+
+await app.RunAsync();

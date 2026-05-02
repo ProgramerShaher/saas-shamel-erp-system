@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace ERPsystem.Application.Common.Models
@@ -9,6 +10,9 @@ namespace ERPsystem.Application.Common.Models
     /// <typeparam name="T">نوع البيانات المرجعة (مثل TenantDto)</typeparam>
     public class BaseResponse<T>
     {
+        /// <summary>معرف الكيان المتعلق بالعملية (لتوحيد الاستجابة في كل أجزاء التطبيق)</summary>
+        public Guid? Id { get; set; }
+
         /// <summary>هل نجحت العملية أم لا؟</summary>
         public bool Succeeded { get; set; }
         
@@ -30,6 +34,20 @@ namespace ERPsystem.Application.Common.Models
             Succeeded = true;
             Message = message;
             Data = data;
+
+            // محاولة استخراج الـ ID تلقائياً لتوحيد شكل الاستجابة للـ Frontend (حسب الطلب)
+            if (data is Guid guidId)
+            {
+                Id = guidId;
+            }
+            else if (data != null)
+            {
+                var idProperty = data.GetType().GetProperty("Id");
+                if (idProperty != null && idProperty.PropertyType == typeof(Guid))
+                {
+                    Id = (Guid?)idProperty.GetValue(data);
+                }
+            }
         }
 
         public BaseResponse(string message)

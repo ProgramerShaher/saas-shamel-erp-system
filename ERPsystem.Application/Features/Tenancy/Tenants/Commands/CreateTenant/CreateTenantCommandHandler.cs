@@ -19,13 +19,16 @@ namespace ERPsystem.Application.Features.Tenancy.Tenants.Commands.CreateTenant
     {
         private readonly IApplicationDbContext _context;
         private readonly ILogger<CreateTenantCommandHandler> _logger;
+        private readonly ITenantSetupService _tenantSetupService;
 
         public CreateTenantCommandHandler(
             IApplicationDbContext context,
-            ILogger<CreateTenantCommandHandler> logger)
+            ILogger<CreateTenantCommandHandler> logger,
+            ITenantSetupService tenantSetupService)
         {
             _context = context;
             _logger = logger;
+            _tenantSetupService = tenantSetupService;
         }
 
         /// <summary>
@@ -63,12 +66,16 @@ namespace ERPsystem.Application.Features.Tenancy.Tenants.Commands.CreateTenant
                 {
                     Name          = request.Name,
                     Slug          = request.Slug.ToLower(),
+                    DatabaseSchema = request.Slug.ToLower().Replace("-", "_"), 
                     BusinessType  = request.BusinessType,
                     SubscriptionPlanId = request.SubscriptionPlanId,
                     PrimaryColor  = request.PrimaryColor,
                     LogoUrl       = request.LogoUrl,
                     IsActive      = true
                 };
+
+                // توليد وإضافة الميزات الافتراضية بناءً على نوع النشاط (القاعدة السابعة)
+                tenant.FeatureFlags = _tenantSetupService.GenerateDefaultFeatureFlags(request.BusinessType);
 
                 await _context.Tenants.AddAsync(tenant, cancellationToken);
                 await _context.SaveChangesAsync(cancellationToken);

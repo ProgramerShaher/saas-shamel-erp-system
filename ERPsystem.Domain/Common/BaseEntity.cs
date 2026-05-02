@@ -13,9 +13,9 @@ namespace ERPsystem.Domain.Common
 
         /// <summary>تاريخ ووقت إنشاء السجل في قاعدة البيانات</summary>
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-        
+
         /// <summary>معرف المستخدم الذي قام بإنشاء هذا السجل</summary>
-        public Guid CreatedBy { get; set; }
+        public Guid CreatedBy { get; set; } = new Guid();
 
         /// <summary>تاريخ ووقت آخر تعديل على السجل</summary>
         public DateTime? UpdatedAt { get; set; }
