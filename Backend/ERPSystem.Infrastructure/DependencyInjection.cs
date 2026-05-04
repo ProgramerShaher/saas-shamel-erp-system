@@ -1,5 +1,6 @@
 using ERPsystem.Application.Common.Interfaces;
 using ERPsystem.Infrastructure.Persistence;
+using ERPsystem.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,6 +22,9 @@ namespace ERPsystem.Infrastructure
 
             // ربط الواجهة بالتنفيذ الفعلي (Scoped) ليتم حقنها في الـ Handlers
             services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
+
+            // تسجيل خدمة الملفات
+            services.AddScoped<IFileService, FileService>();
 
             return services;
         }

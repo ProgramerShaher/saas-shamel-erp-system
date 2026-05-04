@@ -1,0 +1,64 @@
+.animate-in {
+  animation-duration: 0.5s;
+  animation-fill-mode: both;
+}
+
+.fade-in {
+  animation-name: fadeIn;
+}
+
+.slide-in-from-left-4 {
+  animation-name: slideInLeft;
+}
+
+.slide-in-from-right-4 {
+  animation-name: slideInRight;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideInLeft {
+  from { transform: translateX(20px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes slideInRight {
+  from { transform: translateX(-20px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #E2E8F0;
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #CBD5E1;
+}
+
+/* RTL Support for inputs */
+.ltr {
+  direction: ltr !important;
+  text-align: left !important;
+}
+
+/* Glow effects */
+input:focus, select:focus {
+  box-shadow: 0 0 0 8px rgba(30, 58, 95, 0.05);
+}
+
+.peer:checked + div {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px -5px rgba(46, 134, 171, 0.1);
+}

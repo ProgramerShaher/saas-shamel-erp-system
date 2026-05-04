@@ -1,0 +1,161 @@
+<div class="max-w-4xl mx-auto space-y-6">
+  <!-- Header -->
+  <div class="flex items-center justify-between">
+    <div class="flex items-center gap-4">
+      <button 
+        routerLink="/tenants"
+        class="w-10 h-10 rounded-xl bg-white border border-gray-100 flex items-center justify-center text-gray-400 hover:text-[#1E3A5F] hover:border-gray-200 transition-all shadow-sm"
+      >
+        <i class="pi pi-arrow-right"></i>
+      </button>
+      <div>
+        <h2 class="text-2xl font-bold text-[#1E3A5F]">
+          {{ isEditMode() ? 'تعديل منشأة' : 'إضافة منشأة جديدة' }}
+        </h2>
+        <p class="text-gray-500 text-sm">أدخل بيانات المنشأة والمسؤول الأساسي</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Form Card -->
+  <form [formGroup]="form" (ngSubmit)="save()" class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+    <div class="p-8 space-y-8">
+      
+      <!-- Basic Info Section -->
+      <section class="space-y-6">
+        <div class="flex items-center gap-2 text-[#2E86AB]">
+          <i class="pi pi-info-circle font-bold"></i>
+          <h3 class="font-bold text-sm uppercase tracking-wider">البيانات الأساسية</h3>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="space-y-2">
+            <label class="text-sm font-semibold text-gray-600">اسم المنشأة <span class="text-rose-500">*</span></label>
+            <input 
+              type="text" 
+              formControlName="name"
+              placeholder="مثال: شركة الحلول الذكية"
+              class="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-[#2E86AB] focus:ring-4 focus:ring-[#2E86AB]/5 outline-none transition-all text-sm"
+            />
+          </div>
+
+          <div class="space-y-2">
+            <label class="text-sm font-semibold text-gray-600">النطاق الفرعي (Slug) <span class="text-rose-500">*</span></label>
+            <div class="relative">
+              <input 
+                type="text" 
+                formControlName="slug"
+                placeholder="مثال: smart-solutions"
+                class="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-[#2E86AB] focus:ring-4 focus:ring-[#2E86AB]/5 outline-none transition-all text-sm ltr"
+              />
+              <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-xs font-mono">.shamel.erp</span>
+            </div>
+          </div>
+
+          <div class="space-y-2">
+            <label class="text-sm font-semibold text-gray-600">نوع النشاط <span class="text-rose-500">*</span></label>
+            <select 
+              formControlName="businessType"
+              class="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-[#2E86AB] focus:ring-4 focus:ring-[#2E86AB]/5 outline-none transition-all text-sm bg-white"
+            >
+              @for (type of businessTypes; track type.id) {
+                <option [value]="type.id">{{ type.name }}</option>
+              }
+            </select>
+          </div>
+
+          <div class="space-y-2">
+            <label class="text-sm font-semibold text-gray-600">خطة الاشتراك <span class="text-rose-500">*</span></label>
+            <select 
+              formControlName="subscriptionPlanId"
+              class="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-[#2E86AB] focus:ring-4 focus:ring-[#2E86AB]/5 outline-none transition-all text-sm bg-white"
+            >
+              <option value="">-- اختر الخطة --</option>
+              @for (plan of plans(); track plan.id) {
+                <option [value]="plan.id">{{ plan.planName }} - {{ plan.monthlyPrice }} ر.س/شهر</option>
+              }
+            </select>
+          </div>
+
+
+          <div class="flex items-end pb-2">
+            <label class="flex items-center gap-3 cursor-pointer group">
+              <div class="relative inline-flex items-center">
+                <input type="checkbox" formControlName="isActive" class="sr-only peer">
+                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#2E86AB]"></div>
+              </div>
+              <span class="text-sm font-semibold text-gray-600 group-hover:text-[#1E3A5F] transition-colors">المنشأة نشطة حالياً</span>
+            </label>
+          </div>
+        </div>
+      </section>
+
+      <hr class="border-gray-50" />
+
+      <!-- Admin Credentials (Only for New Tenants) -->
+      @if (!isEditMode()) {
+        <section class="space-y-6">
+          <div class="flex items-center gap-2 text-[#2E86AB]">
+            <i class="pi pi-user font-bold"></i>
+            <h3 class="font-bold text-sm uppercase tracking-wider">بيانات مدير المنشأة</h3>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="space-y-2">
+              <label class="text-sm font-semibold text-gray-600">البريد الإلكتروني <span class="text-rose-500">*</span></label>
+              <input 
+                type="email" 
+                formControlName="adminEmail"
+                placeholder="admin@example.com"
+                class="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-[#2E86AB] focus:ring-4 focus:ring-[#2E86AB]/5 outline-none transition-all text-sm ltr"
+              />
+            </div>
+
+            <div class="space-y-2">
+              <label class="text-sm font-semibold text-gray-600">كلمة المرور <span class="text-rose-500">*</span></label>
+              <div class="relative">
+                <input 
+                  [type]="showPassword ? 'text' : 'password'" 
+                  formControlName="adminPassword"
+                  placeholder="••••••••"
+                  class="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-[#2E86AB] focus:ring-4 focus:ring-[#2E86AB]/5 outline-none transition-all text-sm ltr"
+                />
+                <button 
+                  type="button"
+                  (click)="showPassword = !showPassword"
+                  class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                >
+                  <i class="pi" [ngClass]="showPassword ? 'pi-eye-slash' : 'pi-eye'"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+      }
+    </div>
+
+    <!-- Actions Footer -->
+    <div class="bg-gray-50/80 px-8 py-6 flex items-center justify-end gap-4 border-t border-gray-100">
+      <button 
+        type="button"
+        routerLink="/tenants"
+        class="px-6 py-2.5 rounded-xl text-sm font-bold text-gray-500 hover:text-gray-700 hover:bg-gray-100 transition-all"
+      >
+        إلغاء
+      </button>
+      <button 
+        type="submit"
+        [disabled]="form.invalid || isSaving()"
+        class="bg-[#1E3A5F] hover:bg-[#1E3A5F]/90 disabled:opacity-50 disabled:cursor-not-allowed text-white px-10 py-2.5 rounded-xl font-bold transition-all shadow-lg shadow-[#1E3A5F]/20 flex items-center gap-2"
+      >
+        @if (isSaving()) {
+          <i class="pi pi-spin pi-spinner"></i>
+          <span>جاري الحفظ...</span>
+        } @else {
+          <i class="pi pi-check"></i>
+          <span>حفظ البيانات</span>
+        }
+      </button>
+    </div>
+  </form>
+</div>

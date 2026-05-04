@@ -4,13 +4,14 @@ using ERPsystem.Domain.Enums.Tenancy;
 namespace ERPsystem.Application.Features.Tenancy.Tenants.Queries.GetTenants
 {
     /// <summary>
-    /// نموذج العرض (ViewModel) لاسترجاع بيانات المنشأة في القوائم.
+    /// نموذج البيانات (DTO) لاسترجاع بيانات المنشأة في القوائم.
     /// يستخدم في الـ ProjectTo (Projection) مباشرة من قاعدة البيانات
-    /// لمنع جلب بيانات حساسة كـ PasswordHash أو بيانات زائدة.
+    /// لمنع جلب بيانات حساسة أو Navigation Properties زائدة.
     /// </summary>
-    public class TenantVm
+    public class TenantDto
     {
-        public Guid Id { get; set; }
+        public Guid Id { 
+            get; set; }
 
         /// <summary>اسم المنشأة</summary>
         public string Name { get; set; } = null!;

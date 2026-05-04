@@ -11,6 +11,7 @@ using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using TenantDto = ERPsystem.Application.Features.Tenancy.Tenants.Queries.GetTenantById.TenantDto;
 
 namespace ERPsystem.API.Controllers.Tenancy
 {

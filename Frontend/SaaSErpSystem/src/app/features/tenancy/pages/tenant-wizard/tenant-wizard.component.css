@@ -1,0 +1,30 @@
+.font-arabic {
+    font-family: 'Inter', 'Noto Sans Arabic', sans-serif;
+}
+
+.ltr {
+    direction: ltr !important;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.4s ease-out forwards;
+}
+
+/* Color Input Custom Styling */
+input[type="color"] {
+    -webkit-appearance: none;
+    appearance: none;
+}
+input[type="color"]::-webkit-color-swatch-wrapper {
+    padding: 0;
+}
+input[type="color"]::-webkit-color-swatch {
+    border: none;
+    border-radius: 12px;
+}

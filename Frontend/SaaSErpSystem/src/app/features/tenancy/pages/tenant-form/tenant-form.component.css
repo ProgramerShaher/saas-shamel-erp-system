@@ -1,0 +1,15 @@
+:host {
+  display: block;
+}
+
+input.ltr, select.ltr {
+  direction: ltr;
+}
+
+[dir="rtl"] input.ltr, [dir="rtl"] select.ltr {
+  text-align: right;
+}
+
+[dir="rtl"] .relative input.ltr {
+  padding-left: 5.5rem; /* Space for the .shamel.erp suffix */
+}

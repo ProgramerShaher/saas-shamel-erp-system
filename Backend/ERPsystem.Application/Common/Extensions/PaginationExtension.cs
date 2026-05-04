@@ -26,6 +26,7 @@ namespace ERPsystem.Application.Common.Extensions
             var count = await queryable.CountAsync(cancellationToken);
 
             var items = await queryable
+                .AsNoTracking()
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync(cancellationToken);

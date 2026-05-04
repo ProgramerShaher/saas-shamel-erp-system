@@ -1,0 +1,203 @@
+<div class="space-y-8 p-6 max-w-7xl mx-auto">
+  <!-- Page Header -->
+  <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div>
+      <h1 class="text-3xl font-bold text-[#1E3A5F]">إدارة الخصائص والمميزات</h1>
+      <p class="text-gray-500">تحكم في المميزات المتاحة لكل نوع نشاط أو لكل منشأة بشكل مستقل</p>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <!-- Business Type Features Column -->
+    <div class="lg:col-span-1 space-y-6">
+      <div class="bg-white rounded-3xl border border-gray-100 shadow-xl p-6 space-y-6">
+        <div class="flex items-center gap-3 border-b border-gray-50 pb-4">
+          <div class="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center">
+            <i class="pi pi-briefcase"></i>
+          </div>
+          <h2 class="text-lg font-bold text-[#1E3A5F]">مميزات نوع النشاط</h2>
+        </div>
+
+        <!-- Type Selector -->
+        <div class="space-y-2">
+          <label class="text-xs font-bold text-gray-400 uppercase tracking-widest">اختر نوع النشاط</label>
+          <select [ngModel]="selectedBusinessType()" (ngModelChange)="onBusinessTypeChange($event)"
+            class="w-full px-4 py-3 rounded-2xl border-2 border-gray-50 focus:border-indigo-500 outline-none transition-all font-medium text-gray-700 bg-gray-50/50">
+            @for (type of businessTypes; track type.id) {
+            <option [value]="type.id">{{ type.name }}</option>
+            }
+          </select>
+        </div>
+
+        <!-- Add Feature Form -->
+        <form [formGroup]="featureForm" (ngSubmit)="addBusinessTypeFeature()"
+          class="space-y-4 pt-4 border-t border-gray-50">
+          <div class="space-y-2">
+            <label class="text-xs font-bold text-gray-400 uppercase tracking-widest">اختر الميزة (Feature)</label>
+            <select formControlName="featureKey"
+              class="w-full px-4 py-3 rounded-2xl border-2 border-gray-50 focus:border-indigo-500 outline-none transition-all text-sm bg-white">
+              <option value="">-- اختر الميزة --</option>
+              @for (f of availableFeatures; track f.id) {
+                <option [value]="f.id">{{ f.name }}</option>
+              }
+            </select>
+          </div>
+          <button type="submit" [disabled]="featureForm.invalid || isSaving()"
+            class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-2xl font-bold transition-all shadow-lg shadow-indigo-200 flex items-center justify-center gap-2">
+            @if (isSaving()) { <i class="pi pi-spin pi-spinner text-xs"></i> }
+            <i class="pi pi-plus text-xs"></i>
+            <span>إضافة ميزة للنوع</span>
+          </button>
+        </form>
+
+        <!-- Features List -->
+        <div class="space-y-3 pt-4">
+          <label class="text-xs font-bold text-gray-400 uppercase tracking-widest">المميزات الحالية</label>
+          @if (isLoading()) {
+          <div class="flex justify-center py-8">
+            <i class="pi pi-spin pi-spinner text-indigo-500 text-2xl"></i>
+          </div>
+          } @else {
+          <div class="space-y-2">
+            @for (feature of businessTypeFeatures(); track feature.featureKey) {
+            <div
+              class="flex items-center justify-between p-4 bg-gray-50 rounded-2xl border border-gray-100 group hover:border-indigo-200 transition-all">
+                  <div class="flex flex-col">
+                    <span class="text-sm font-bold text-[#1E3A5F]">{{ getFeatureName(feature.featureKey) }}</span>
+                    <span class="text-[10px] text-gray-400 font-bold">نشط تلقائياً للنوع</span>
+                  </div>
+              <i class="pi pi-check-circle text-emerald-500"></i>
+            </div>
+            } @empty {
+            <p class="text-center py-8 text-gray-400 text-xs font-bold">لا يوجد مميزات مضافة بعد</p>
+            }
+          </div>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- Tenants Column -->
+    <div class="lg:col-span-2 space-y-6">
+      <div class="bg-white rounded-3xl border border-gray-100 shadow-xl overflow-hidden">
+        <div class="p-6 border-b border-gray-50 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center">
+              <i class="pi pi-building"></i>
+            </div>
+            <h2 class="text-lg font-bold text-[#1E3A5F]">تخصيص المميزات لكل منشأة</h2>
+          </div>
+          <span class="text-xs font-bold bg-blue-50 text-blue-600 px-3 py-1 rounded-full">{{ tenants().length }}
+            منشأة</span>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-right border-collapse">
+            <thead>
+              <tr class="bg-gray-50/50 text-gray-400">
+                <th class="px-6 py-4 text-[10px] font-black uppercase tracking-widest">المنشأة</th>
+                <th class="px-6 py-4 text-[10px] font-black uppercase tracking-widest">النوع</th>
+                <th class="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-center">الإجراءات</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-50">
+              @for (tenant of tenants(); track tenant.id) {
+              <tr class="hover:bg-gray-50/50 transition-all">
+                <td class="px-6 py-4">
+                  <div class="flex items-center gap-3">
+                    <div
+                      class="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center text-xs font-bold text-gray-500">
+                      {{ tenant.name.substring(0, 1) }}
+                    </div>
+                    <span class="text-sm font-bold text-[#1E3A5F]">{{ tenant.name }}</span>
+                  </div>
+                </td>
+                <td class="px-6 py-4">
+                  <span class="text-[10px] font-bold bg-gray-100 text-gray-500 px-2 py-1 rounded-md uppercase">
+                    {{ tenant.businessType }}
+                  </span>
+                </td>
+                <td class="px-6 py-4">
+                  <div class="flex justify-center">
+                    <button (click)="manageTenantFeatures(tenant)"
+                      class="px-4 py-2 bg-white border border-gray-100 shadow-sm hover:border-indigo-500 hover:text-indigo-600 rounded-xl text-xs font-bold transition-all flex items-center gap-2">
+                      <i class="pi pi-cog"></i>
+                      <span>إدارة الخصائص</span>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Tenant Feature Management Modal -->
+<app-modal [isOpen]="showTenantModal()" [size]="'md'" [title]="'خصائص: ' + (selectedTenant()?.name || '')"
+  (closed)="showTenantModal.set(false)">
+  <div class="space-y-6">
+    <!-- Upsert Form -->
+    <div class="bg-indigo-50/30 p-6 rounded-3xl border border-indigo-100/50 space-y-4">
+      <h3 class="text-xs font-black text-indigo-600 uppercase tracking-widest">تحديث ميزة مخصصة</h3>
+      <form [formGroup]="tenantFeatureForm" (ngSubmit)="upsertTenantFeature()"
+        class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="md:col-span-2 space-y-2">
+          <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">اختر الميزة</label>
+          <select formControlName="featureKey"
+            class="w-full px-4 py-3 rounded-2xl border-2 border-white focus:border-indigo-500 outline-none transition-all text-sm bg-white shadow-sm">
+            <option value="">-- اختر الميزة --</option>
+            @for (f of availableFeatures; track f.id) {
+              <option [value]="f.id">{{ f.name }}</option>
+            }
+          </select>
+        </div>
+        <div class="space-y-2">
+          <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">الحالة</label>
+          <div class="flex items-center gap-3 bg-white p-3 rounded-2xl shadow-sm border border-white">
+            <input type="checkbox" formControlName="isEnabled" class="w-4 h-4 accent-indigo-600" />
+            <span class="text-sm font-bold text-gray-600">تفعيل الميزة</span>
+          </div>
+        </div>
+        <div class="flex items-end">
+          <button type="submit" [disabled]="tenantFeatureForm.invalid || isSaving()"
+            class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-2xl font-bold transition-all shadow-lg shadow-indigo-200 flex items-center justify-center gap-2">
+            @if (isSaving()) { <i class="pi pi-spin pi-spinner text-xs"></i> }
+            <i class="pi pi-save text-xs"></i>
+            <span>حفظ الإعداد</span>
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Current Tenant Features -->
+    <div class="space-y-3">
+      <h3 class="text-xs font-black text-gray-400 uppercase tracking-widest px-1">الخصائص المخصصة الحالية</h3>
+      <div class="space-y-2 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
+        @for (flag of tenantFeatureFlags(); track flag.featureKey) {
+        <div
+          class="flex items-center justify-between p-4 bg-white border border-gray-100 rounded-2xl shadow-sm transition-all hover:border-indigo-100">
+          <div class="flex flex-col">
+            <span class="text-sm font-bold text-[#1E3A5F]">{{ getFeatureName(flag.featureKey) }}</span>
+            <span class="text-[10px] text-gray-400 font-bold">تخصيص مخصص للمنشأة</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full"
+              [ngClass]="flag.isEnabled ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-500'">
+              {{ flag.isEnabled ? 'مفعل' : 'معطل' }}
+            </span>
+          </div>
+        </div>
+        } @empty {
+        <div class="text-center py-12 bg-gray-50 rounded-3xl border border-dashed border-gray-200">
+          <i class="pi pi-cog text-3xl text-gray-200 mb-2"></i>
+          <p class="text-xs text-gray-400 font-bold uppercase tracking-widest">لا توجد خصائص مخصصة لهذه المنشأة</p>
+        </div>
+        }
+      </div>
+    </div>
+  </div>
+</app-modal>

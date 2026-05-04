@@ -1,0 +1,375 @@
+<div class="space-y-6">
+  <!-- Header -->
+  <div class="flex items-center justify-between">
+    <div>
+      <h2 class="text-2xl font-bold text-[#1E3A5F]">المنشآت (Tenants)</h2>
+      <p class="text-gray-500 text-sm">إدارة كافة المنشآت المشتركة في النظام</p>
+    </div>
+    <button
+      (click)="openCreate()"
+      class="bg-gradient-to-r from-[#1E3A5F] to-[#2E86AB] hover:from-[#2E86AB] hover:to-[#1E3A5F] text-white px-6 py-3 rounded-2xl font-bold transition-all flex items-center gap-2 shadow-xl shadow-[#2E86AB]/20 scale-100 hover:scale-105 active:scale-95"
+    >
+      <i class="pi pi-plus"></i>
+      <span>إضافة منشأة جديدة</span>
+    </button>
+  </div>
+
+  <!-- Stats Grid -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div class="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm relative overflow-hidden group">
+      <div class="absolute top-0 right-0 w-24 h-24 bg-blue-500/5 rounded-full -mr-12 -mt-12 transition-transform group-hover:scale-150"></div>
+      <div class="flex items-center gap-5">
+        <div class="w-14 h-14 bg-blue-50 text-[#2E86AB] rounded-2xl flex items-center justify-center shadow-inner">
+          <i class="pi pi-building text-2xl"></i>
+        </div>
+        <div>
+          <p class="text-xs text-gray-400 font-bold uppercase tracking-wider">إجمالي المنشآت</p>
+          <p class="text-3xl font-black text-[#1E3A5F]">{{ tenants().length }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm relative overflow-hidden group">
+      <div class="absolute top-0 right-0 w-24 h-24 bg-emerald-500/5 rounded-full -mr-12 -mt-12 transition-transform group-hover:scale-150"></div>
+      <div class="flex items-center gap-5">
+        <div class="w-14 h-14 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center shadow-inner">
+          <i class="pi pi-check-circle text-2xl"></i>
+        </div>
+        <div>
+          <p class="text-xs text-gray-400 font-bold uppercase tracking-wider">المنشآت النشطة</p>
+          <p class="text-3xl font-black text-[#1E3A5F]">{{ activeTenants() }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm relative overflow-hidden group">
+      <div class="absolute top-0 right-0 w-24 h-24 bg-rose-500/5 rounded-full -mr-12 -mt-12 transition-transform group-hover:scale-150"></div>
+      <div class="flex items-center gap-5">
+        <div class="w-14 h-14 bg-rose-50 text-rose-500 rounded-2xl flex items-center justify-center shadow-inner">
+          <i class="pi pi-ban text-2xl"></i>
+        </div>
+        <div>
+          <p class="text-xs text-gray-400 font-bold uppercase tracking-wider">المنشآت الموقوفة</p>
+          <p class="text-3xl font-black text-[#1E3A5F]">{{ tenants().length - activeTenants() }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading / Table -->
+  @if (isLoading()) {
+    <div class="flex flex-col items-center justify-center py-32 space-y-4">
+      <div class="relative w-20 h-20">
+        <div class="absolute inset-0 border-4 border-[#2E86AB]/10 rounded-full"></div>
+        <div class="absolute inset-0 border-4 border-[#2E86AB] rounded-full border-t-transparent animate-spin"></div>
+      </div>
+      <p class="text-gray-400 font-medium animate-pulse">جاري تحضير البيانات...</p>
+    </div>
+  } @else {
+    <div class="bg-white rounded-[2rem] border border-gray-100 shadow-xl shadow-gray-200/50 overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="w-full text-right border-collapse">
+          <thead>
+            <tr class="bg-emerald-600 text-white">
+              <th class="px-8 py-4 text-xs font-black uppercase tracking-[0.2em] text-right">المنشأة</th>
+              <th class="px-8 py-4 text-xs font-black uppercase tracking-[0.2em] text-right">النطاق</th>
+              <th class="px-8 py-4 text-xs font-black uppercase tracking-[0.2em] text-right">الحالة</th>
+              <th class="px-8 py-4 text-xs font-black uppercase tracking-[0.2em] text-right">تاريخ الإنشاء</th>
+              <th class="px-8 py-4 text-xs font-black uppercase tracking-[0.2em] text-center">الإجراءات</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-50">
+            @for (tenant of tenants(); track tenant.id) {
+              <tr class="hover:bg-blue-50/30 transition-all group cursor-default">
+                <td class="px-8 py-5">
+                  <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-white to-gray-50 border border-gray-100 flex items-center justify-center text-[#2E86AB] font-black shadow-sm group-hover:shadow-md transition-shadow shrink-0 overflow-hidden">
+                      @if (tenant.logoUrl) {
+                        <img [src]="getImageUrl(tenant.logoUrl)" class="w-full h-full object-cover" />
+                      } @else {
+                        <span class="text-xl">{{ tenant.name.substring(0, 1) }}</span>
+                      }
+                    </div>
+                    <div>
+                      <p class="text-sm font-bold text-[#1E3A5F] group-hover:text-[#2E86AB] transition-colors">{{ tenant.name }}</p>
+                      <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{{ getBusinessTypeName(tenant.businessType) }}</p>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-8 py-5">
+                  <code class="px-3 py-1.5 bg-gray-100 text-gray-600 rounded-lg text-[11px] font-bold">{{ tenant.slug }}</code>
+                </td>
+                <td class="px-8 py-5">
+                  <div class="flex items-center gap-2">
+                    <div class="w-2 h-2 rounded-full" [ngClass]="tenant.isActive ? 'bg-emerald-500 animate-pulse' : 'bg-rose-500'"></div>
+                    <span class="text-xs font-bold" [ngClass]="tenant.isActive ? 'text-emerald-600' : 'text-rose-600'">
+                      {{ tenant.isActive ? 'نشط' : 'متوقف' }}
+                    </span>
+                  </div>
+                </td>
+                <td class="px-8 py-5 text-xs font-medium text-gray-500">
+                  {{ tenant.createdAt | date:'longDate' }}
+                </td>
+                <td class="px-8 py-5">
+                  <div class="flex items-center justify-center gap-2 transition-all">
+                    <!-- عرض (بني) -->
+                    <button class="w-9 h-9 flex items-center justify-center bg-white text-[#8B4513] hover:bg-orange-50 rounded-xl shadow-sm border border-gray-100 transition-all">
+                      <i class="pi pi-eye text-xs"></i>
+                    </button>
+                    <!-- تعديل (أخضر) -->
+                    <button (click)="openEdit(tenant)" class="w-9 h-9 flex items-center justify-center bg-white text-emerald-600 hover:bg-emerald-50 rounded-xl shadow-sm border border-gray-100 transition-all">
+                      <i class="pi pi-pencil text-xs"></i>
+                    </button>
+                    <!-- حذف (أحمر) -->
+                    <button (click)="deleteTenant(tenant.id)" class="w-9 h-9 flex items-center justify-center bg-white text-rose-600 hover:bg-rose-50 rounded-xl shadow-sm border border-gray-100 transition-all">
+                      <i class="pi pi-trash text-xs"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="5" class="px-8 py-24 text-center">
+                  <div class="max-w-xs mx-auto space-y-4">
+                    <div class="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mx-auto text-gray-300">
+                      <i class="pi pi-inbox text-4xl"></i>
+                    </div>
+                    <div class="space-y-1">
+                      <p class="text-gray-600 font-bold">لا يوجد بيانات حالياً</p>
+                      <p class="text-xs text-gray-400">ابدأ بإضافة أول منشأة للنظام عبر الزر في الأعلى</p>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  }
+</div>
+
+<!-- Premium Wizard Modal -->
+<app-modal
+  [isOpen]="showModal()"
+  [size]="'lg'"
+  [title]="editingTenant() ? 'تعديل المنشأة' : 'إنشاء منشأة جديدة'"
+  (closed)="closeModal()"
+>
+  <div class="flex flex-col min-h-[500px]">
+    
+    <!-- Wizard Steps Header -->
+    @if (!editingTenant()) {
+      <div class="flex items-center justify-center mb-10 px-8">
+        <div class="flex items-center w-full max-w-md relative">
+          <!-- Connector Line -->
+          <div class="absolute top-1/2 left-0 w-full h-0.5 bg-gray-100 -translate-y-1/2"></div>
+          <div class="absolute top-1/2 left-0 h-0.5 bg-gradient-to-r from-[#1E3A5F] to-[#2E86AB] -translate-y-1/2 transition-all duration-500"
+               [style.width]="currentStep() === 1 ? '0%' : '100%'"></div>
+          
+          <!-- Step 1 -->
+          <div class="relative z-10 flex flex-col items-center gap-2">
+            <div class="w-10 h-10 rounded-full flex items-center justify-center font-bold transition-all duration-500 border-4"
+                 [ngClass]="currentStep() >= 1 ? 'bg-[#1E3A5F] text-white border-white ring-4 ring-[#1E3A5F]/10' : 'bg-white text-gray-400 border-gray-100'">
+              @if (currentStep() > 1) { <i class="pi pi-check"></i> } @else { 1 }
+            </div>
+            <span class="text-[10px] font-black uppercase tracking-widest" [ngClass]="currentStep() >= 1 ? 'text-[#1E3A5F]' : 'text-gray-300'">الأساسيات</span>
+          </div>
+
+          <div class="flex-1"></div>
+
+          <!-- Step 2 -->
+          <div class="relative z-10 flex flex-col items-center gap-2">
+            <div class="w-10 h-10 rounded-full flex items-center justify-center font-bold transition-all duration-500 border-4"
+                 [ngClass]="currentStep() >= 2 ? 'bg-[#2E86AB] text-white border-white ring-4 ring-[#2E86AB]/10' : 'bg-white text-gray-400 border-gray-100'">
+              2
+            </div>
+            <span class="text-[10px] font-black uppercase tracking-widest" [ngClass]="currentStep() >= 2 ? 'text-[#2E86AB]' : 'text-gray-300'">الاشتراك والهوية</span>
+          </div>
+        </div>
+      </div>
+    }
+
+    <form [formGroup]="form" (ngSubmit)="save()" class="flex-1 flex flex-col">
+      
+      <!-- STEP 1: Basic Info -->
+      @if (currentStep() === 1) {
+        <div class="space-y-8 animate-in fade-in slide-in-from-left-4 duration-500 flex-1">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="space-y-2">
+              <label class="text-xs font-black text-gray-400 uppercase tracking-widest">اسم المنشأة</label>
+              <div class="relative">
+                <i class="pi pi-building absolute right-4 top-1/2 -translate-y-1/2 text-gray-300"></i>
+                <input type="text" formControlName="name" placeholder="أدخل اسم الشركة"
+                  class="w-full pr-11 pl-4 py-3.5 rounded-2xl border-2 border-gray-100 focus:border-[#1E3A5F] focus:ring-8 focus:ring-[#1E3A5F]/5 outline-none transition-all font-medium text-gray-700 placeholder:text-gray-300" />
+              </div>
+            </div>
+            <div class="space-y-2">
+              <label class="text-xs font-black text-gray-400 uppercase tracking-widest">النطاق (Slug)</label>
+              <div class="relative">
+                <i class="pi pi-globe absolute right-4 top-1/2 -translate-y-1/2 text-gray-300"></i>
+                <input type="text" formControlName="slug" placeholder="smart-erp" [readOnly]="!!editingTenant()"
+                  class="w-full pr-11 pl-4 py-3.5 rounded-2xl border-2 border-gray-100 focus:border-[#1E3A5F] focus:ring-8 focus:ring-[#1E3A5F]/5 outline-none transition-all font-bold text-gray-700 placeholder:text-gray-300 ltr"
+                  [ngClass]="editingTenant() ? 'bg-gray-50 cursor-not-allowed opacity-60' : ''" />
+              </div>
+            </div>
+          </div>
+
+          <div class="space-y-4">
+            <label class="text-xs font-black text-gray-400 uppercase tracking-widest">نوع النشاط التجاري</label>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <!-- Business Type Options -->
+              @for (type of [{id:1, name:'تجزئة', icon:'pi-shopping-cart'}, {id:2, name:'مطعم', icon:'pi-map'}, {id:3, name:'خدمات', icon:'pi-cog'}, {id:4, name:'أخرى', icon:'pi-ellipsis-h'}]; track type.id) {
+                <label class="relative group cursor-pointer">
+                  <input type="radio" formControlName="businessType" [value]="type.id" class="sr-only peer" />
+                  <div class="p-4 rounded-2xl border-2 border-gray-100 bg-white text-center transition-all duration-300 peer-checked:border-[#1E3A5F] peer-checked:bg-[#1E3A5F]/5 group-hover:border-gray-200">
+                    <div class="w-10 h-10 mx-auto bg-gray-50 rounded-xl flex items-center justify-center text-gray-400 group-hover:text-gray-600 transition-colors peer-checked:bg-white peer-checked:text-[#1E3A5F] shadow-sm mb-2">
+                      <i [class]="'pi ' + type.icon"></i>
+                    </div>
+                    <span class="text-xs font-black text-gray-500 peer-checked:text-[#1E3A5F] uppercase">{{ type.name }}</span>
+                  </div>
+                  <div class="absolute top-2 left-2 opacity-0 peer-checked:opacity-100 transition-opacity">
+                    <i class="pi pi-check-circle text-[#1E3A5F]"></i>
+                  </div>
+                </label>
+              }
+            </div>
+          </div>
+
+          @if (editingTenant()) {
+            <div class="p-6 rounded-3xl bg-gray-50 border border-gray-100 flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-[#2E86AB] shadow-sm">
+                  <i class="pi pi-power-off"></i>
+                </div>
+                <div>
+                  <p class="text-sm font-bold text-[#1E3A5F]">حالة المنشأة</p>
+                  <p class="text-[10px] text-gray-400 uppercase tracking-widest font-bold">تفعيل أو إيقاف وصول المستخدمين</p>
+                </div>
+              </div>
+              <label class="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" formControlName="isActive" class="sr-only peer">
+                <div class="w-14 h-7 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-[20px] after:w-[20px] after:transition-all peer-checked:bg-emerald-500 shadow-inner"></div>
+              </label>
+            </div>
+          }
+        </div>
+      }
+
+      <!-- STEP 2: Plan & Identity -->
+      @if (currentStep() === 2 || editingTenant()) {
+        <div class="space-y-8 animate-in fade-in slide-in-from-right-4 duration-500 flex-1">
+          
+          <div class="space-y-4">
+            <label class="text-xs font-black text-gray-400 uppercase tracking-widest">اختر باقة الاشتراك</label>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              @for (plan of plans(); track plan.id) {
+                <label class="relative group cursor-pointer">
+                  <input type="radio" formControlName="subscriptionPlanId" [value]="plan.id" class="sr-only peer" />
+                  <div class="p-5 rounded-3xl border-2 border-gray-100 bg-white transition-all duration-300 peer-checked:border-[#2E86AB] peer-checked:ring-4 peer-checked:ring-[#2E86AB]/5">
+                    <div class="flex justify-between items-start mb-4">
+                      <div class="w-10 h-10 bg-gray-50 rounded-xl flex items-center justify-center text-gray-400 peer-checked:text-[#2E86AB] peer-checked:bg-blue-50 transition-colors">
+                        <i class="pi pi-star"></i>
+                      </div>
+                      <div class="text-left">
+                        <p class="text-xl font-black text-[#1E3A5F]">${{ plan.monthlyPrice }}</p>
+                        <p class="text-[9px] text-gray-400 font-bold uppercase tracking-widest">شهرياً</p>
+                      </div>
+                    </div>
+                    <p class="text-sm font-black text-[#1E3A5F] mb-1">{{ plan.planName }}</p>
+                    <div class="flex flex-wrap gap-2">
+                      <span class="text-[9px] font-bold bg-gray-100 text-gray-500 px-2 py-1 rounded-md">{{ plan.maxUsers }} مستخدم</span>
+                      <span class="text-[9px] font-bold bg-gray-100 text-gray-500 px-2 py-1 rounded-md">{{ plan.maxBranches }} فروع</span>
+                    </div>
+                  </div>
+                  <div class="absolute top-4 left-4 opacity-0 peer-checked:opacity-100 transition-opacity">
+                    <div class="w-5 h-5 bg-[#2E86AB] rounded-full flex items-center justify-center text-white text-[10px]">
+                      <i class="pi pi-check"></i>
+                    </div>
+                  </div>
+                </label>
+              }
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="space-y-3">
+              <label class="text-xs font-black text-gray-400 uppercase tracking-widest">اللون الأساسي للعلامة التجارية</label>
+              <div class="flex items-center gap-4 p-4 rounded-2xl bg-gray-50 border border-gray-100">
+                <input type="color" formControlName="primaryColor"
+                  class="h-12 w-20 rounded-xl border-none cursor-pointer p-0.5 bg-white shadow-sm" />
+                <div class="flex-1">
+                  <p class="text-xs font-bold text-[#1E3A5F]">{{ form.get('primaryColor')?.value }}</p>
+                  <p class="text-[9px] text-gray-400 uppercase font-black">سيظهر في القوائم والأزرار</p>
+                </div>
+              </div>
+            </div>
+            <div class="space-y-3">
+              <label class="text-xs font-black text-gray-400 uppercase tracking-widest">شعار المنشأة (Logo)</label>
+              <div class="flex items-center gap-6">
+                <!-- Preview Circle -->
+                <div class="relative group">
+                  <div class="w-24 h-24 rounded-3xl bg-gray-50 border-2 border-dashed border-gray-200 flex items-center justify-center overflow-hidden transition-all group-hover:border-[#2E86AB]/50">
+                    @if (logoPreview()) {
+                      <img [src]="logoPreview()" class="w-full h-full object-cover" />
+                      <button type="button" (click)="logoPreview.set(null); form.get('logoUrl')?.setValue('')" 
+                              class="absolute -top-2 -left-2 w-6 h-6 bg-rose-500 text-white rounded-full flex items-center justify-center shadow-lg opacity-0 group-hover:opacity-100 transition-opacity">
+                        <i class="pi pi-times text-[10px]"></i>
+                      </button>
+                    } @else {
+                      <i class="pi pi-image text-2xl text-gray-300"></i>
+                    }
+                  </div>
+                </div>
+
+                <!-- Upload Action -->
+                <div class="flex-1 space-y-2">
+                  <input #fileInput type="file" (change)="onFileSelected($event)" accept="image/*" class="hidden" />
+                  <button type="button" (click)="triggerFileInput(fileInput)"
+                          class="px-4 py-2.5 rounded-xl border-2 border-gray-100 text-sm font-bold text-[#1E3A5F] hover:bg-gray-50 transition-all flex items-center gap-2">
+                    <i class="pi pi-upload"></i>
+                    <span>تحميل صورة من الجهاز</span>
+                  </button>
+                  <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">JPG, PNG أو SVG (بحد أقصى 1MB)</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- Actions -->
+      <div class="mt-12 flex items-center justify-between gap-4 pt-6 border-t border-gray-50">
+        <button type="button" (click)="prevStep()" [disabled]="currentStep() === 1 || isSaving()"
+                class="px-6 py-3 rounded-2xl text-sm font-black text-gray-400 hover:text-gray-600 disabled:opacity-0 transition-all flex items-center gap-2">
+          <i class="pi pi-arrow-right"></i>
+          <span>السابق</span>
+        </button>
+
+        <div class="flex items-center gap-3">
+          <button type="button" (click)="closeModal()" [disabled]="isSaving()"
+                  class="px-6 py-3 rounded-2xl text-sm font-black text-gray-500 hover:bg-gray-100 transition-all">
+            إلغاء
+          </button>
+          
+          @if (currentStep() < 2 && !editingTenant()) {
+            <button type="button" (click)="nextStep()" [disabled]="form.get('name')?.invalid || form.get('slug')?.invalid"
+                    class="bg-[#1E3A5F] hover:bg-[#1E3A5F]/90 text-white px-10 py-3 rounded-2xl font-black transition-all shadow-xl shadow-[#1E3A5F]/20 flex items-center gap-2 text-sm disabled:opacity-50">
+              <span>المتابعة</span>
+              <i class="pi pi-arrow-left"></i>
+            </button>
+          } @else {
+            <button type="submit" [disabled]="form.invalid || isSaving()"
+                    class="bg-gradient-to-r from-[#1E3A5F] to-[#2E86AB] hover:shadow-2xl hover:shadow-[#2E86AB]/30 disabled:opacity-50 text-white px-10 py-3 rounded-2xl font-black transition-all flex items-center gap-2 text-sm">
+              @if (isSaving()) {
+                <i class="pi pi-spin pi-spinner"></i>
+                <span>جاري المعالجة...</span>
+              } @else {
+                <i class="pi pi-check-circle"></i>
+                <span>{{ editingTenant() ? 'حفظ التغييرات' : 'إتمام الإنشاء' }}</span>
+              }
+            </button>
+          }
+        </div>
+      </div>
+    </form>
+  </div>
+</app-modal>

@@ -1,0 +1,27 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Kufi+Arabic:wght@300;400;500;600;700&display=swap');
+@import 'tailwindcss';
+@import "primeicons/primeicons.css";
+
+@theme {
+    --color-primary: #1E3A5F;
+    --color-accent: #2E86AB;
+    --color-light: #F0F7FF;
+}
+
+:root {
+    --primary: #1E3A5F;
+    --accent: #2E86AB;
+    --light: #F0F7FF;
+}
+
+body {
+    margin: 0;
+    font-family: 'Inter', 'Noto Kufi Arabic', sans-serif;
+    background-color: var(--light);
+    color: #1E293B;
+}
+
+/* RTL Support */
+[dir="rtl"] {
+    font-family: 'Noto Kufi Arabic', 'Inter', sans-serif;
+}

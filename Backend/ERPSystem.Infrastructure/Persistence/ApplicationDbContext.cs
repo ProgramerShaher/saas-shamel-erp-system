@@ -29,13 +29,13 @@ namespace ERPsystem.Infrastructure.Persistence
     /// </summary>
     public class ApplicationDbContext : DbContext, IApplicationDbContext
     {
-        private readonly ICurrentUserService _currentUserService;
+        protected ICurrentUserService CurrentUserService { get; }
 
         public ApplicationDbContext(
             DbContextOptions<ApplicationDbContext> options,
             ICurrentUserService currentUserService) : base(options)
         {
-            _currentUserService = currentUserService;
+            CurrentUserService = currentUserService;
         }
 
         // ══════════════════════════════════════════════════════
@@ -151,8 +151,8 @@ namespace ERPsystem.Infrastructure.Persistence
         /// </summary>
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
-            var userId   = _currentUserService.UserId;
-            var tenantId = _currentUserService.TenantId;
+            var userId   = CurrentUserService.UserId;
+            var tenantId = CurrentUserService.TenantId;
 
             foreach (var entry in ChangeTracker.Entries<BaseEntity>())
             {
@@ -225,9 +225,11 @@ namespace ERPsystem.Infrastructure.Persistence
                     var isDeletedProp   = Expression.Property(param, nameof(BaseEntity.IsDeleted));
                     var notDeleted      = Expression.Equal(isDeletedProp, Expression.Constant(false));
 
+                    // استخدام الخاصية المحمية لضمان وصول الـ Expression لها عند تنفيذ الاستعلام
                     var tenantIdProp    = Expression.Property(param, nameof(TenantBaseEntity.TenantId));
-                    var svcConst        = Expression.Constant(_currentUserService);
-                    var tenantIdVal     = Expression.Property(svcConst, nameof(ICurrentUserService.TenantId));
+                    var contextParam    = Expression.Parameter(typeof(ApplicationDbContext), "db"); 
+                    var svcProp         = Expression.Property(contextParam, nameof(CurrentUserService));
+                    var tenantIdVal     = Expression.Property(svcProp, nameof(ICurrentUserService.TenantId));
                     var sameTenant      = Expression.Equal(tenantIdProp, tenantIdVal);
 
                     var combined        = Expression.AndAlso(notDeleted, sameTenant);

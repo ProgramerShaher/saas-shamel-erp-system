@@ -20,15 +20,18 @@ namespace ERPsystem.Application.Features.Tenancy.Tenants.Commands.CreateTenant
         private readonly IApplicationDbContext _context;
         private readonly ILogger<CreateTenantCommandHandler> _logger;
         private readonly ITenantSetupService _tenantSetupService;
+        private readonly IFileService _fileService;
 
         public CreateTenantCommandHandler(
             IApplicationDbContext context,
             ILogger<CreateTenantCommandHandler> logger,
-            ITenantSetupService tenantSetupService)
+            ITenantSetupService tenantSetupService,
+            IFileService fileService)
         {
             _context = context;
             _logger = logger;
             _tenantSetupService = tenantSetupService;
+            _fileService = fileService;
         }
 
         /// <summary>
@@ -61,6 +64,9 @@ namespace ERPsystem.Application.Features.Tenancy.Tenants.Commands.CreateTenant
                         $"النطاق الفرعي '{request.Slug}' مسجل مسبقاً، يرجى اختيار نطاق آخر.");
                 }
 
+                // معالجة الصورة في حال تم إرسالها كـ Base64
+                var logoUrl = await _fileService.SaveBase64ImageAsync(request.LogoUrl, "tenants", request.Slug, cancellationToken);
+
                 // بناء كيان المنشأة يدوياً (لا AutoMapper من Command إلى Entity — قاعدة ثانياً)
                 var tenant = new Tenant
                 {
@@ -70,7 +76,7 @@ namespace ERPsystem.Application.Features.Tenancy.Tenants.Commands.CreateTenant
                     BusinessType  = request.BusinessType,
                     SubscriptionPlanId = request.SubscriptionPlanId,
                     PrimaryColor  = request.PrimaryColor,
-                    LogoUrl       = request.LogoUrl,
+                    LogoUrl       = logoUrl ?? request.LogoUrl,
                     IsActive      = true
                 };
 

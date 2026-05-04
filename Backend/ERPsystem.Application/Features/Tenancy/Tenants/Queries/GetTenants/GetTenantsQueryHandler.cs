@@ -7,6 +7,7 @@ using ERPsystem.Application.Common.Interfaces;
 using ERPsystem.Application.Common.Models;
 using ERPsystem.Application.Features.Tenancy.Tenants.Queries.GetTenantById;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace ERPsystem.Application.Features.Tenancy.Tenants.Queries.GetTenants
@@ -45,16 +46,16 @@ namespace ERPsystem.Application.Features.Tenancy.Tenants.Queries.GetTenants
                 "▶ بدأ استعلام قائمة المنشآت | الصفحة: [{Page}] | الحجم: [{Size}] | بحث: [{Keyword}]",
                 request.PageNumber, request.PageSize, request.SearchKeyword ?? "لا يوجد");
 
-            // بناء الاستعلام الأساسي (Deferred Execution — لا شيء يُجلب من DB هنا)
-            var query = _context.Tenants.AsQueryable();
+            // بناء الاستعلام الأساسي مع تعطيل التتبع للأداء (AsNoTracking)
+            var query = _context.Tenants.AsNoTracking().AsQueryable();
 
             // تطبيق فلتر البحث إن وُجد
             if (!string.IsNullOrWhiteSpace(request.SearchKeyword))
             {
-                var keyword = request.SearchKeyword.Trim().ToLower();
+                var keyword = request.SearchKeyword.Trim();
                 query = query.Where(t =>
-                    t.Name.ToLower().Contains(keyword) ||
-                    t.Slug.ToLower().Contains(keyword));
+                    t.Name.Contains(keyword) ||
+                    t.Slug.Contains(keyword));
             }
 
             // ProjectTo: يحوّل الـ Entity إلى TenantVm مباشرة في الـ SQL

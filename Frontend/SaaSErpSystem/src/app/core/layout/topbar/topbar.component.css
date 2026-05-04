@@ -1,0 +1,11 @@
+:host {
+  display: block;
+}
+
+/* RTL specific adjustments if needed */
+[dir="rtl"] .border-l {
+  border-left-width: 0;
+  border-right-width: 1px;
+  padding-left: 0;
+  padding-right: 1.5rem;
+}

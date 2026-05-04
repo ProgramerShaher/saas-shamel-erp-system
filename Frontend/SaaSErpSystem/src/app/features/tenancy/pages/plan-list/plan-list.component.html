@@ -1,0 +1,171 @@
+<div class="space-y-6">
+  <!-- Header -->
+  <div class="flex items-center justify-between">
+    <div>
+      <h2 class="text-2xl font-bold text-[#1E3A5F]">خطط الاشتراك</h2>
+      <p class="text-gray-500 text-sm">تعريف خطط الأسعار والميزات المتاحة</p>
+    </div>
+    <button
+      (click)="openCreate()"
+      class="bg-[#2E86AB] hover:bg-[#2E86AB]/90 text-white px-5 py-2.5 rounded-xl font-medium transition-all flex items-center gap-2 shadow-lg shadow-[#2E86AB]/20"
+    >
+      <i class="pi pi-plus"></i>
+      <span>إضافة خطة جديدة</span>
+    </button>
+  </div>
+
+  <!-- Loading State -->
+  @if (isLoading()) {
+    <div class="flex justify-center py-20">
+      <div class="flex flex-col items-center gap-4 text-gray-400">
+        <i class="pi pi-spin pi-spinner text-4xl text-[#2E86AB]"></i>
+        <p>جاري تحميل البيانات...</p>
+      </div>
+    </div>
+  } @else {
+    <!-- Plans Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      @for (plan of plans(); track plan.id) {
+        <div class="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden flex flex-col hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
+          <div class="p-8 flex-1 space-y-5">
+            <div class="flex justify-between items-start">
+              <div class="w-14 h-14 bg-[#F0F7FF] text-[#2E86AB] rounded-2xl flex items-center justify-center">
+                <i class="pi pi-star text-2xl"></i>
+              </div>
+              <span
+                class="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider"
+                [ngClass]="plan.isActive ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'"
+              >
+                {{ plan.isActive ? 'نشطة' : 'متوقفة' }}
+              </span>
+            </div>
+
+            <div>
+              <h3 class="text-xl font-bold text-[#1E3A5F]">{{ plan.planName }}</h3>
+              <p class="text-gray-400 text-sm mt-1 line-clamp-2">{{ plan.description || 'لا يوجد وصف' }}</p>
+            </div>
+
+            <div class="flex items-baseline gap-1">
+              <span class="text-3xl font-black text-[#1E3A5F]">{{ plan.monthlyPrice | number }}</span>
+              <span class="text-gray-400 text-sm">ريال / شهر</span>
+            </div>
+
+            <ul class="space-y-2.5 pt-4 border-t border-gray-50 text-sm text-gray-600">
+              <li class="flex items-center gap-2">
+                <i class="pi pi-check text-emerald-500 text-xs"></i>
+                <span>فروع: <strong>{{ plan.maxBranches }}</strong></span>
+              </li>
+              <li class="flex items-center gap-2">
+                <i class="pi pi-check text-emerald-500 text-xs"></i>
+                <span>نقاط بيع: <strong>{{ plan.maxPosTerminals }}</strong></span>
+              </li>
+              <li class="flex items-center gap-2">
+                <i class="pi pi-check text-emerald-500 text-xs"></i>
+                <span>مستخدمين: <strong>{{ plan.maxUsers }}</strong></span>
+              </li>
+              <li class="flex items-center gap-2">
+                <i class="pi pi-check text-emerald-500 text-xs"></i>
+                <span>أصناف: <strong>{{ plan.maxItems }}</strong></span>
+              </li>
+            </ul>
+          </div>
+
+          <div class="bg-gray-50/50 px-6 py-4 border-t border-gray-100 flex items-center justify-between">
+            <button
+              (click)="openEdit(plan)"
+              class="text-sm font-bold text-[#2E86AB] hover:text-[#1E3A5F] transition-colors flex items-center gap-1"
+            >
+              <i class="pi pi-pencil text-xs"></i> تعديل الخطة
+            </button>
+          </div>
+        </div>
+      } @empty {
+        <div class="col-span-full py-20 text-center text-gray-400">
+          <i class="pi pi-list text-4xl mb-3 block"></i>
+          <p class="font-medium">لا توجد خطط اشتراك حالياً</p>
+          <p class="text-sm mt-1">اضغط "إضافة خطة جديدة" لإنشاء أول خطة</p>
+        </div>
+      }
+    </div>
+  }
+</div>
+
+<!-- Create / Edit Plan Modal -->
+<app-modal
+  [isOpen]="showModal()"
+  [title]="editingPlan() ? 'تعديل خطة الاشتراك' : 'إضافة خطة اشتراك جديدة'"
+  (closed)="closeModal()"
+>
+  <form [formGroup]="form" (ngSubmit)="save()" class="space-y-6">
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="md:col-span-2 space-y-1.5">
+        <label class="text-sm font-semibold text-gray-600">اسم الخطة <span class="text-rose-500">*</span></label>
+        <input type="text" formControlName="planName" placeholder="مثال: الباقة الذهبية"
+          class="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-[#2E86AB] focus:ring-4 focus:ring-[#2E86AB]/5 outline-none transition-all text-sm" />
+      </div>
+      <div class="md:col-span-2 space-y-1.5">
+        <label class="text-sm font-semibold text-gray-600">الوصف</label>
+        <textarea formControlName="description" rows="2" placeholder="وصف مختصر للخطة..."
+          class="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-[#2E86AB] focus:ring-4 focus:ring-[#2E86AB]/5 outline-none transition-all text-sm resize-none"></textarea>
+      </div>
+      <div class="space-y-1.5">
+        <label class="text-sm font-semibold text-gray-600">السعر الشهري (ريال) <span class="text-rose-500">*</span></label>
+        <input type="number" formControlName="monthlyPrice" placeholder="0"
+          class="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-[#2E86AB] focus:ring-4 focus:ring-[#2E86AB]/5 outline-none transition-all text-sm" />
+      </div>
+      <div class="space-y-1.5">
+        <label class="text-sm font-semibold text-gray-600">السعر السنوي (ريال)</label>
+        <input type="number" formControlName="annualPrice" placeholder="0"
+          class="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-[#2E86AB] focus:ring-4 focus:ring-[#2E86AB]/5 outline-none transition-all text-sm" />
+      </div>
+      <div class="space-y-1.5">
+        <label class="text-sm font-semibold text-gray-600">الحد الأقصى للفروع <span class="text-rose-500">*</span></label>
+        <input type="number" formControlName="maxBranches" placeholder="1"
+          class="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-[#2E86AB] focus:ring-4 focus:ring-[#2E86AB]/5 outline-none transition-all text-sm" />
+      </div>
+      <div class="space-y-1.5">
+        <label class="text-sm font-semibold text-gray-600">الحد الأقصى لنقاط البيع <span class="text-rose-500">*</span></label>
+        <input type="number" formControlName="maxPosTerminals" placeholder="1"
+          class="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-[#2E86AB] focus:ring-4 focus:ring-[#2E86AB]/5 outline-none transition-all text-sm" />
+      </div>
+      <div class="space-y-1.5">
+        <label class="text-sm font-semibold text-gray-600">الحد الأقصى للمستخدمين <span class="text-rose-500">*</span></label>
+        <input type="number" formControlName="maxUsers" placeholder="5"
+          class="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-[#2E86AB] focus:ring-4 focus:ring-[#2E86AB]/5 outline-none transition-all text-sm" />
+      </div>
+      <div class="space-y-1.5">
+        <label class="text-sm font-semibold text-gray-600">الحد الأقصى للأصناف <span class="text-rose-500">*</span></label>
+        <input type="number" formControlName="maxItems" placeholder="1000"
+          class="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-[#2E86AB] focus:ring-4 focus:ring-[#2E86AB]/5 outline-none transition-all text-sm" />
+      </div>
+      <div class="md:col-span-2 flex items-center">
+        <label class="flex items-center gap-3 cursor-pointer">
+          <div class="relative inline-flex items-center">
+            <input type="checkbox" formControlName="isActive" class="sr-only peer">
+            <div class="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#2E86AB]"></div>
+          </div>
+          <span class="text-sm font-semibold text-gray-600">الخطة نشطة ومتاحة للاشتراك</span>
+        </label>
+      </div>
+    </div>
+
+    <!-- Footer Actions -->
+    <div class="flex items-center justify-end gap-3 pt-4 border-t border-gray-100">
+      <button type="button" (click)="closeModal()"
+        class="px-6 py-2.5 rounded-xl text-sm font-bold text-gray-500 hover:text-gray-700 hover:bg-gray-100 transition-all">
+        إلغاء
+      </button>
+      <button type="submit" [disabled]="form.invalid || isSaving()"
+        class="bg-[#1E3A5F] hover:bg-[#1E3A5F]/90 disabled:opacity-50 disabled:cursor-not-allowed text-white px-8 py-2.5 rounded-xl font-bold transition-all shadow-lg shadow-[#1E3A5F]/20 flex items-center gap-2 text-sm">
+        @if (isSaving()) {
+          <i class="pi pi-spin pi-spinner"></i>
+          <span>جاري الحفظ...</span>
+        } @else {
+          <i class="pi pi-check"></i>
+          <span>{{ editingPlan() ? 'تحديث الخطة' : 'إنشاء الخطة' }}</span>
+        }
+      </button>
+    </div>
+  </form>
+</app-modal>

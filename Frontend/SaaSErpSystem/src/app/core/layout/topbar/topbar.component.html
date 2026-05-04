@@ -1,0 +1,47 @@
+<header 
+  class="h-14 bg-white border-b border-gray-200 flex items-center justify-between px-6 shadow-sm sticky top-0 z-10"
+  [attr.dir]="ui.currentLang() === 'ar' ? 'rtl' : 'ltr'"
+>
+  <!-- Left Side: Page Title -->
+  <div class="flex items-center gap-4">
+    <h1 class="text-lg font-semibold text-[#1E3A5F]">
+      {{ pageTitle() }}
+    </h1>
+  </div>
+
+  <!-- Right Side: Actions & User -->
+  <div class="flex items-center gap-6">
+    <!-- Language Toggle (Optional but good for UX) -->
+    <button 
+      (click)="toggleLanguage()"
+      class="text-sm font-medium text-gray-600 hover:text-[#2E86AB] transition-colors"
+    >
+      {{ ui.currentLang() === 'ar' ? 'English' : 'العربية' }}
+    </button>
+
+    <!-- Notifications -->
+    <button class="relative p-2 text-gray-500 hover:bg-gray-100 rounded-full transition-colors">
+      <i class="pi pi-bell text-xl"></i>
+      <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
+    </button>
+
+    <!-- User Info -->
+    <div class="flex items-center gap-3 pl-6 border-l border-gray-200">
+      <div class="text-right hidden sm:block">
+        <p class="text-sm font-semibold text-[#1E3A5F] leading-tight">شاهر البرمج</p>
+        <p class="text-xs text-gray-500">مدير النظام</p>
+      </div>
+      <div class="w-9 h-9 rounded-full bg-[#F0F7FF] border border-[#2E86AB]/20 flex items-center justify-center text-[#2E86AB] font-bold">
+        S
+      </div>
+    </div>
+
+    <!-- Logout -->
+    <button 
+      class="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50/50 rounded-lg transition-all"
+      title="تسجيل الخروج"
+    >
+      <i class="pi pi-sign-out text-xl"></i>
+    </button>
+  </div>
+</header>

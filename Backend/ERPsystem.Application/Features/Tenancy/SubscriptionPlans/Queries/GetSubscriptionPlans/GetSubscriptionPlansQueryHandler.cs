@@ -7,6 +7,7 @@ using ERPsystem.Application.Common.Extensions;
 using ERPsystem.Application.Common.Interfaces;
 using ERPsystem.Application.Common.Models;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace ERPsystem.Application.Features.Tenancy.SubscriptionPlans.Queries.GetSubscriptionPlans
@@ -34,12 +35,12 @@ namespace ERPsystem.Application.Features.Tenancy.SubscriptionPlans.Queries.GetSu
         {
             _logger.LogInformation("▶ بدأ استعلام قائمة باقات الاشتراك");
 
-            var query = _context.SubscriptionPlans.AsQueryable();
+            var query = _context.SubscriptionPlans.AsNoTracking().AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(request.SearchKeyword))
             {
-                var keyword = request.SearchKeyword.Trim().ToLower();
-                query = query.Where(p => p.PlanName.ToLower().Contains(keyword));
+                var keyword = request.SearchKeyword.Trim();
+                query = query.Where(p => p.PlanName.Contains(keyword));
             }
 
             var projectedQuery = query

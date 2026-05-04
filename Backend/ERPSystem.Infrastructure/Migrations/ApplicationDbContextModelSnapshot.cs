@@ -69,7 +69,7 @@ namespace ERPSystem.Infrastructure.Migrations
 
                     b.HasIndex("TenantId");
 
-                    b.ToTable("Brands", (string)null);
+                    b.ToTable("Brands");
                 });
 
             modelBuilder.Entity("ERPsystem.Domain.Entities.Catalog.Category", b =>
@@ -439,7 +439,7 @@ namespace ERPSystem.Infrastructure.Migrations
 
                     b.HasIndex("UnitId");
 
-                    b.ToTable("ItemPrices", (string)null);
+                    b.ToTable("ItemPrices");
                 });
 
             modelBuilder.Entity("ERPsystem.Domain.Entities.Catalog.ItemUnit", b =>
@@ -604,7 +604,7 @@ namespace ERPSystem.Infrastructure.Migrations
 
                     b.HasIndex("VariantId");
 
-                    b.ToTable("ItemVariantAttributeValues", (string)null);
+                    b.ToTable("ItemVariantAttributeValues");
                 });
 
             modelBuilder.Entity("ERPsystem.Domain.Entities.Catalog.PriceList", b =>
@@ -709,7 +709,7 @@ namespace ERPSystem.Infrastructure.Migrations
 
                     b.HasIndex("TenantId");
 
-                    b.ToTable("TaxGroups", (string)null);
+                    b.ToTable("TaxGroups");
                 });
 
             modelBuilder.Entity("ERPsystem.Domain.Entities.Catalog.UnitOfMeasure", b =>
@@ -760,7 +760,7 @@ namespace ERPSystem.Infrastructure.Migrations
 
                     b.HasIndex("TenantId");
 
-                    b.ToTable("UnitOfMeasures", (string)null);
+                    b.ToTable("UnitOfMeasures");
                 });
 
             modelBuilder.Entity("ERPsystem.Domain.Entities.Catalog.VariantAttribute", b =>
@@ -807,7 +807,7 @@ namespace ERPSystem.Infrastructure.Migrations
 
                     b.HasIndex("TenantId");
 
-                    b.ToTable("VariantAttributes", (string)null);
+                    b.ToTable("VariantAttributes");
                 });
 
             modelBuilder.Entity("ERPsystem.Domain.Entities.Catalog.VariantAttributeValue", b =>
@@ -859,7 +859,7 @@ namespace ERPSystem.Infrastructure.Migrations
 
                     b.HasIndex("TenantId");
 
-                    b.ToTable("VariantAttributeValues", (string)null);
+                    b.ToTable("VariantAttributeValues");
                 });
 
             modelBuilder.Entity("ERPsystem.Domain.Entities.Configuration.AuditLog", b =>
@@ -1580,7 +1580,7 @@ namespace ERPSystem.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Permissions", (string)null);
+                    b.ToTable("Permissions");
                 });
 
             modelBuilder.Entity("ERPsystem.Domain.Entities.Identity.Role", b =>
@@ -1817,7 +1817,7 @@ namespace ERPSystem.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserRoles", (string)null);
+                    b.ToTable("UserRoles");
                 });
 
             modelBuilder.Entity("ERPsystem.Domain.Entities.Identity.UserSession", b =>
@@ -1875,7 +1875,7 @@ namespace ERPSystem.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserSessions", (string)null);
+                    b.ToTable("UserSessions");
                 });
 
             modelBuilder.Entity("ERPsystem.Domain.Entities.Inventory.BatchLot", b =>
@@ -2536,7 +2536,7 @@ namespace ERPSystem.Infrastructure.Migrations
 
                     b.HasIndex("TenantId");
 
-                    b.ToTable("BankAccounts", (string)null);
+                    b.ToTable("BankAccounts");
                 });
 
             modelBuilder.Entity("ERPsystem.Domain.Entities.Organization.Branch", b =>
@@ -2739,7 +2739,7 @@ namespace ERPSystem.Infrastructure.Migrations
 
                     b.HasIndex("TenantId");
 
-                    b.ToTable("Headquarters", (string)null);
+                    b.ToTable("Headquarters");
                 });
 
             modelBuilder.Entity("ERPsystem.Domain.Entities.Organization.PosTerminal", b =>
@@ -2806,7 +2806,7 @@ namespace ERPSystem.Infrastructure.Migrations
 
                     b.HasIndex("TenantId");
 
-                    b.ToTable("PosTerminals", (string)null);
+                    b.ToTable("PosTerminals");
                 });
 
             modelBuilder.Entity("ERPsystem.Domain.Entities.Organization.Warehouse", b =>

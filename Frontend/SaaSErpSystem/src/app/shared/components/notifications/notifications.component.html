@@ -1,0 +1,34 @@
+<div class="fixed bottom-6 left-6 z-[9999] flex flex-col gap-3 max-w-md w-full">
+  @for (n of service.notifications(); track n.id) {
+    <div 
+      class="flex items-start gap-4 p-4 rounded-xl shadow-2xl border animate-slide-in-left transition-all duration-300"
+      [ngClass]="{
+        'bg-emerald-50 border-emerald-200 text-emerald-800': n.type === 'success',
+        'bg-rose-50 border-rose-200 text-rose-800': n.type === 'error',
+        'bg-blue-50 border-blue-200 text-blue-800': n.type === 'info',
+        'bg-amber-50 border-amber-200 text-amber-800': n.type === 'warning'
+      }"
+    >
+      <div class="shrink-0 pt-0.5">
+        @switch (n.type) {
+          @case ('success') { <i class="pi pi-check-circle text-xl"></i> }
+          @case ('error') { <i class="pi pi-times-circle text-xl"></i> }
+          @case ('warning') { <i class="pi pi-exclamation-triangle text-xl"></i> }
+          @default { <i class="pi pi-info-circle text-xl"></i> }
+        }
+      </div>
+      <div class="flex-1">
+        @if (n.title) {
+          <h3 class="font-bold text-sm mb-1">{{ n.title }}</h3>
+        }
+        <p class="text-sm leading-relaxed">{{ n.message }}</p>
+      </div>
+      <button 
+        (click)="service.remove(n.id)"
+        class="shrink-0 hover:bg-black/5 rounded p-1 transition-colors"
+      >
+        <i class="pi pi-times text-xs"></i>
+      </button>
+    </div>
+  }
+</div>
