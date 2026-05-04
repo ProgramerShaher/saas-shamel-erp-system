@@ -3,6 +3,7 @@ using ERPsystem.Domain.Common;
 
 namespace ERPsystem.Domain.Entities.Identity
 {
+    
     /// <summary>
     /// جدول الوسيط لربط المستخدم بالدور.
     /// يدعم التخصيص المكاني؛ فالمستخدم قد يكون (مدير) في فرع أ، و(كاشير) في فرع ب.

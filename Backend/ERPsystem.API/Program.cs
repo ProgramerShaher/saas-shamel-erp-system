@@ -5,6 +5,8 @@ using ERPsystem.Application;
 using ERPsystem.Application.Common.Interfaces;
 using ERPsystem.Infrastructure;
 using ERPsystem.Infrastructure.Persistence;
+using ERPsystem.Infrastructure.Identity;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 
@@ -37,8 +39,21 @@ builder.Services.AddCors(options =>
 // تسجيل خدمات طبقة الـ Application (MediatR + Validators + Pipeline Behaviors)
 builder.Services.AddApplicationServices();
 
-// تسجيل خدمات طبقة الـ Infrastructure (الـ DbContext + المقابس الخارجية)
 builder.Services.AddInfrastructureServices(builder.Configuration);
+
+// تسجيل خدمات Microsoft Identity (ApplicationUser, ApplicationRole)
+builder.Services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
+{
+    // إعدادات الهوية الافتراضية ويمكنك تخصيصها لاحقًا
+    options.Password.RequireDigit = true;
+    options.Password.RequireLowercase = true;
+    options.Password.RequireUppercase = false;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequiredLength = 6;
+    options.User.RequireUniqueEmail = true;
+})
+    .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddDefaultTokenProviders();
 
 // تسجيل خدمات الـ API (المستخدم الحالي والـ HttpContext)
 builder.Services.AddHttpContextAccessor();
@@ -83,6 +98,7 @@ app.UseStaticFiles();
 
 app.UseCors("AllowAngularApp");
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

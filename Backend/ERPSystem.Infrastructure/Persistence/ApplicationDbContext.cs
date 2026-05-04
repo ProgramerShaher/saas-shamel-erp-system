@@ -3,7 +3,9 @@ using ERPsystem.Domain.Common;
 using ERPsystem.Domain.Entities.Catalog;
 using ERPsystem.Domain.Entities.Configuration;
 using ERPsystem.Domain.Entities.Finance;
-using ERPsystem.Domain.Entities.Identity;
+// using ERPsystem.Domain.Entities.Identity;
+using ERPsystem.Infrastructure.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using ERPsystem.Domain.Entities.Inventory;
 using ERPsystem.Domain.Entities.Organization;
 using ERPsystem.Domain.Entities.Purchasing;
@@ -27,7 +29,10 @@ namespace ERPsystem.Infrastructure.Persistence
     ///   4. Global Query Filters لإخفاء المحذوفات وبيانات المنشآت الأخرى.
     ///   5. تحميل جميع IEntityTypeConfiguration تلقائياً عبر Reflection.
     /// </summary>
-    public class ApplicationDbContext : DbContext, IApplicationDbContext
+    /// <summary>
+    /// قاعدة بيانات النظام مع دعم Microsoft Identity (ApplicationUser, ApplicationRole)
+    /// </summary>
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, Guid>, IApplicationDbContext
     {
         protected ICurrentUserService CurrentUserService { get; }
 
@@ -58,14 +63,13 @@ namespace ERPsystem.Infrastructure.Persistence
         public DbSet<PosTerminal> PosTerminals => Set<PosTerminal>();
 
         // ══════════════════════════════════════════════════════
-        //  Identity Module
+        //  Identity Module (Microsoft Identity)
         // ══════════════════════════════════════════════════════
-        public DbSet<User> Users => Set<User>();
-        public DbSet<Role> Roles => Set<Role>();
-        public DbSet<Permission> Permissions => Set<Permission>();
-        public DbSet<RolePermission> RolePermissions => Set<RolePermission>();
-        public DbSet<UserRole> UserRoles => Set<UserRole>();
-        public DbSet<UserSession> UserSessions => Set<UserSession>();
+        // تمت إدارة المستخدمين والأدوار عبر IdentityDbContext
+        // إذا كنت بحاجة لجداول صلاحيات إضافية يمكنك إضافتها هنا:
+        // public DbSet<Permission> Permissions => Set<Permission>();
+        // public DbSet<RolePermission> RolePermissions => Set<RolePermission>();
+        // public DbSet<UserSession> UserSessions => Set<UserSession>();
 
         // ══════════════════════════════════════════════════════
         //  Catalog Module
@@ -190,6 +194,15 @@ namespace ERPsystem.Infrastructure.Persistence
         {
             // تحميل جميع IEntityTypeConfiguration تلقائياً من الـ Assembly
             builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+
+            // تخصيص أسماء جداول Microsoft Identity لتطابق الأسماء القديمة
+            builder.Entity<ApplicationUser>(b => { b.ToTable("Users", "Identity"); });
+            builder.Entity<ApplicationRole>(b => { b.ToTable("Roles", "Identity"); });
+            builder.Entity<IdentityUserRole<Guid>>(b => { b.ToTable("UserRoles", "Identity"); });
+            builder.Entity<IdentityUserClaim<Guid>>(b => { b.ToTable("UserClaims", "Identity"); });
+            builder.Entity<IdentityUserLogin<Guid>>(b => { b.ToTable("UserLogins", "Identity"); });
+            builder.Entity<IdentityRoleClaim<Guid>>(b => { b.ToTable("RoleClaims", "Identity"); });
+            builder.Entity<IdentityUserToken<Guid>>(b => { b.ToTable("UserTokens", "Identity"); });
 
             base.OnModelCreating(builder);
 

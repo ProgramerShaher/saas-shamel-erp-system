@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ERPsystem.Application.Common.Models;
 using System.Linq;
+using Microsoft.AspNetCore.Identity;
 
 namespace ERPsystem.API.Controllers
 {
@@ -18,7 +19,6 @@ namespace ERPsystem.API.Controllers
     public abstract class BaseApiController : ControllerBase
     {
         protected readonly IMediator Mediator;
-
         protected BaseApiController(IMediator mediator)
         {
             Mediator = mediator;
